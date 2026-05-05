@@ -161,3 +161,28 @@ console.log("Tarea con ID 4:", encontrarId4);
 const mapearTitulos = tareas.map(tarea => tarea.titulo);
 console.log("Titulos de tareas:", mapearTitulos);
 
+
+const tarea = { id: 1, titulo: "Diseñar interfaz", estado: "pendiente"};
+
+const {titulo, estado } = tarea;
+console.log(titulo);
+console.log(estado);
+
+
+const tareaOriginal = { id: 1, titulo: "diseñar interfaz", estado: "completada"};
+const tareaActualizada = { ...tareaOriginal, estado: "completada"};
+
+console.log(tareaOriginal.estado);
+console.log(tareaActualizada.estado);
+
+const tarea2 = tareas.find(t => t.id === 2);
+console.log("Tarea original:", tarea2);
+
+const { titulo:tituloTarea, estado:estadoTarea } = tarea2;
+console.log("Titulo:", tituloTarea);
+console.log("Estado:", estadoTarea);
+
+const tarea2Actualizada = { ...tarea2, estado: "completada"};
+
+console.log("Estado original:", tarea2.estado);
+console.log("Estado actualizado:", tarea2Actualizada.estado);
