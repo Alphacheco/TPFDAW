@@ -144,7 +144,7 @@ const totalPreciosConIva = productos.reduce((acumulador, productoActual) => {
 console.log("Total precios con IVA:", totalPreciosConIva);
 //pruebas mezcladas
 const tareas = [
-    { id: 1, proyectoID: 1, titulo: "Definir alcance", estado: "pendiente", prioridad: "alta" },
+    { id: 1, proyectoID: 1, titulo: "Definir alcance", estado: "completada", prioridad: "alta" },
     { id: 2, proyectoID: 1, titulo: "Diseñar interfaz", estado: "en_progreso", prioridad:"media" },
     { id: 3, proyectoID: 1, titulo: "Configurar repositorio", estado: "completada", prioridad: "baja"},
     { id: 4, proyectoID: 2, titulo: "Crear backlog", estado: "pendiente", prioridad: "alta"},
@@ -186,3 +186,71 @@ const tarea2Actualizada = { ...tarea2, estado: "completada"};
 
 console.log("Estado original:", tarea2.estado);
 console.log("Estado actualizado:", tarea2Actualizada.estado);
+
+
+const validarEstado = (estado) => {
+    const estadosValidos = ["pendiente", "en_progreso", "completada"];
+    return estadosValidos.includes(estado);
+}
+
+console.log("es 'pendiente' un estado valido?", validarEstado("pendiente"));
+console.log("Es 'en_progreso' un estado valido?", validarEstado("en_progreso"));
+console.log("Es 'completada' un estado valido?", validarEstado("completada"));
+
+
+const validarPrioridad = (prioridad) => {
+    const prioridadesValidas = ["baja", "media", "alta",];
+    return prioridadesValidas.includes(prioridad);
+}
+
+console.log("Es 'baja' una prioridad valida?", validarPrioridad("baja"));
+console.log("Es 'media' una prioridad valida?", validarPrioridad("media"));
+console.log("Es 'urgente' valida?", validarPrioridad("urgente"));
+
+
+const obtenerMensajeTarea = (tarea) => {
+    if (tarea.estado === "completada") {
+        return "COMPLETADA!:" + tarea.titulo;
+    }
+    else if (tarea.estado === "en_progreso"){
+        return "EN PROGRESO:" + tarea.titulo;
+    }
+    else if (tarea.estado === "pendiente") {
+        return "PENDIENTE:" + tarea.titulo;
+    }
+    else {
+        return "Estado desconocido";
+    }
+}
+
+console.log(obtenerMensajeTarea(tareas[0]));
+console.log(obtenerMensajeTarea(tareas[1]));
+console.log(obtenerMensajeTarea(tareas[2]));
+
+
+const necesitaAtencion = (tarea) => {
+    return tarea.estado === "pendiente" && tarea.prioridad === "alta";
+};
+
+console.log("La tarea 1 necesita atencion?", necesitaAtencion(tareas[0]));
+console.log("La tarea 2 necesita atencion?", necesitaAtencion(tareas[1]));
+console.log("La tarea 4 necesita atencion?", necesitaAtencion(tareas[3]));
+
+console.log( tareas[0]);
+
+const obtenerResumen = (tareas) => {
+    return {
+        total: tareas.length,
+        pendientes: tareas.filter((t) => t.estado.trim().toLowerCase() === "pendiente").length,
+        enProgreso: tareas.filter((t) => t.estado.trim().toLowerCase() === "en_progreso").length,
+        completadas: tareas.filter((t) => t.estado.trim().toLowerCase() === "completada").length,
+        atencionAlta: tareas.filter(
+            (t) => 
+                t.estado.trim().toLowerCase() === "pendiente" &&
+                t.prioridad.trim().toLowerCase() === "alta"
+        ).length,        
+    };
+};
+
+const resumen = obtenerResumen(tareas);
+console.log("Resumen de tareas:", resumen);
