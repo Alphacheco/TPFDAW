@@ -5,6 +5,7 @@ import { Tarea } from "../entities/tarea.entity";
 import { Repository } from "typeorm";
 import { EstadosTareasEnum } from "../enums/estados-tareas.enum";
 import { UpdateTareaDto } from "../dtos/input/update-tarea.dto";
+import { ListTareaDTO } from "../dtos/output/list-tarea.dto";
 
 @Injectable()
 export class TareasService {
@@ -37,6 +38,39 @@ export class TareasService {
 
         await this.tareasRepository.save(tarea);
 
+    }
+
+    async obtenerTareasPorProyecto(idProyecto: number): Promise<ListTareaDTO[]> {
+        const tareas: Tarea[] = await this.tareasRepository.find({
+            where: { idProyecto },
+            order: { id: 'ASC' }
+        });
+        
+        const dtoList: ListTareaDTO[] = [];
+
+        for (const tarea of tareas) {
+            const dto = new ListTareaDTO();
+            dto.id = tarea.id;
+            dto.descripcion = tarea.descripcion;
+            dto.estado = tarea.estado;
+            dtoList.push(dto);
+        }
+
+        return dtoList;
+    }
+
+    async eliminarTarea(idTarea: number): Promise<void> {
+        const tarea: Tarea | null = await this.tareasRepository.findOne({
+            where: { id: idTarea }            
+        });
+        
+        if (!tarea) {
+            throw new BadRequestException("La tarea indicada no existe");
+        }
+
+        tarea.estado = EstadosTareasEnum.BAJA;
+
+        await this.tareasRepository.save(tarea);
     }
 
 }

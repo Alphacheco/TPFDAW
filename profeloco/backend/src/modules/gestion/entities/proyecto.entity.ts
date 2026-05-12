@@ -15,12 +15,12 @@ export class Proyecto {
     @Column({ type: 'enum', enum: EstadosProyectosEnum })
     estado!: EstadosProyectosEnum
 
-    @Column({ name: "id_cliente" })
-    idCliente!: number;
+    @Column({ name: "id_cliente", nullable: true })
+    idCliente!: number | null;
 
-    @ManyToOne(()=>Cliente)
+    @ManyToOne(()=>Cliente, {nullable: true})
     @JoinColumn({name: "id_cliente"})
-    cliente!: Cliente
+    cliente!: Cliente | null;
 
     @OneToMany(()=>Tarea, (tarea)=> tarea.proyecto)
     tareas!: Tarea[]
