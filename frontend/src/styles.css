@@ -1,0 +1,10 @@
+@import "primeicons/primeicons.css";
+
+body{
+    margin: 0;
+    background-color: lightyellow;
+}
+
+.p-dialog{
+    margin: 1rem;
+}

@@ -1,0 +1,33 @@
+<div>
+    <h1>Proyectos</h1>
+
+    <div *ngIf="cargando">
+        Cargando Proyectos...
+    </div>
+
+    <div *ngIf="!cargando && mensajeError">
+        {{ mensajeError }}
+    </div>
+
+    <div *ngIf="!cargando && !mensajeError && proyectos.length === 0">
+        No hay proyectos cargados.
+    </div>
+
+    <a routerLink="/proyectos/nuevo">Nuevo proyecto</a>
+
+    <ul *ngIf="!cargando && !mensajeError &&proyectos.length > 0">
+        <li *ngFor="let proyecto of proyectos"><a [routerLink]="['/proyectos' , proyecto.id]">
+            <strong> {{ proyecto.nombre }} </strong>
+            </a>
+            - {{ proyecto.estado }}
+
+            <div *ngIf="proyecto.cliente">
+                - Cliente: {{ proyecto.cliente.nombre }}
+            </div>
+
+            <div *ngIf="!proyecto.cliente">
+                - Proyecto interno
+            </div>
+        </li>
+    </ul>
+</div>
