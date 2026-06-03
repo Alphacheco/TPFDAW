@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProyectosApiClient } from '../proyectos/proyectos-api-client';
 import { Router } from '@angular/router';
+import { ClientesApiClient, ClienteDTO } from '../clientes/clientes-api-client';
 
 
 @Component({
@@ -15,6 +16,10 @@ import { Router } from '@angular/router';
 export class ProyectoNuevo {
     nombre: string = "";
     estado: string = "ACTIVO";
+    idCliente?: number;
+    clientes: ClienteDTO[] = [];
+
+    private readonly clienteApiClient = inject(ClientesApiClient);
     
     private readonly proyectosApiClient = inject(ProyectosApiClient);
     private readonly router = inject(Router);
@@ -27,7 +32,8 @@ export class ProyectoNuevo {
 
         this.proyectosApiClient.crearProyecto({
             nombre: this.nombre,
-            estado: this.estado            
+            estado: this.estado,
+            idCliente: this.idCliente
         }).subscribe({
             next: () => {
                 this.router.navigateByUrl("/proyectos");
@@ -35,6 +41,12 @@ export class ProyectoNuevo {
             error: (err) => {
                 console.error("Error creando proyecto", err);
             }
+        });
+    }
+
+    ngOnInit() {
+        this.clienteApiClient.getClientes().subscribe(clientes => {
+            this.clientes = clientes.filter(c => c.estado === "ACTIVO");
         });
     }
 

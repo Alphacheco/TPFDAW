@@ -1,0 +1,73 @@
+.contenedor {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.btn-nuevo {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 16px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.lista-proyectos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lista-proyectos li {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+    background-color: #fff;
+}
+
+.fila-principal {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.fila-principal a:first-child {
+    flex: 1;
+    text-decoration: none;
+}
+
+.estado {
+    min-width: 120px;
+    font-weight: bold;
+}
+
+.btn-editar {
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.cliente {
+    margin-top: 8px;
+    color: #666;
+}
+
+.acciones {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-exportar {
+    padding: 10px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+}

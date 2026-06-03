@@ -15,6 +15,16 @@
             </select>
         </div>
 
+        <div>
+            <label>Cliente:</label>
+            <select [(ngModel)]="idCliente" name="idCliente">
+                <option [value]="undefined">Proyecto Interno</option>
+                <option *ngFor="let cliente of clientes" [value]="cliente.id">
+                    {{ cliente.nombre }}
+                </option>
+            </select>
+        </div>
+
         <button type="submit">Crear</button>
     </form>
 </div>

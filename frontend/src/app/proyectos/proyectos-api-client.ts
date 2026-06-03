@@ -13,7 +13,10 @@ export interface ListProyectoDTO {
         estado: string;
 
     };
+    
 }
+
+
 
 @Injectable({ providedIn: 'root' })
 export class ProyectosApiClient {
@@ -23,7 +26,17 @@ export class ProyectosApiClient {
         return this.client.get<ListProyectoDTO[]>('/api/v1/proyectos');
     }
 
-    crearProyecto(dto: { nombre: string; estado: string }): Observable<any> {
+    obtenerProyecto(id: number): Observable<ListProyectoDTO> {
+        return this.client.get<ListProyectoDTO>(`/api/v1/proyectos/${id}`);
+    }
+
+    crearProyecto(dto: { nombre: string; estado: string; idCliente?: number }): Observable<any> {
         return this.client.post('/api/v1/proyectos', dto);
     }
+
+    actualizarProyecto(id: number, dto: { nombre: string; estado: string; idCliente?: number }): Observable<any> {
+        return this.client.put(`/api/v1/proyectos/${id}`, dto);
+    }
+    exportasCSV() {
+    return this.client.get('/api/v1/proyectos/exportar', { responseType: 'blob' });}
 }
