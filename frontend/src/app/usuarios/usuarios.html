@@ -1,0 +1,65 @@
+<div class="usuarios-container">
+    <h1>Gestión de Usuarios</h1>
+    
+    <button class="btn-primary" (click)="toggleCreateForm()">Nuevo Usuario</button>
+    
+    <!-- Create Form -->
+    <div *ngIf="showCreateForm" class="form-container">
+        <h3>Crear Nuevo Usuario</h3>
+        <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" [(ngModel)]="nuevoUsuarioNombre" placeholder="Nombre del usuario">
+        </div>
+        <div class="form-group">
+            <label>Clave:</label>
+            <input type="password" [(ngModel)]="nuevoUsuarioClave" placeholder="Contraseña">
+        </div>
+        <div class="form-actions">
+            <button class="btn-primary" (click)="crearUsuario()">Guardar</button>
+            <button class="btn-secondary" (click)="toggleCreateForm()">Cancelar</button>
+        </div>
+    </div>
+    
+    <!-- Users List -->
+    <table class="usuarios-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let usuario of usuarios$ | async">
+                <td>{{ usuario.id }}</td>
+                <td *ngIf="editingUsuario?.id !== usuario.id">{{ usuario.nombre }}</td>
+                <td *ngIf="editingUsuario?.id === usuario.id">
+                    <input type="text" [(ngModel)]="editNombre">
+                </td>
+                <td *ngIf="editingUsuario?.id !== usuario.id">
+                    <span [class]="'status-' + usuario.estado.toLowerCase()">{{ usuario.estado }}</span>
+                </td>
+                <td *ngIf="editingUsuario?.id === usuario.id">
+                    <select [(ngModel)]="editEstado">
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="BAJA">BAJA</option>
+                    </select>
+                </td>
+                <td>
+                    <ng-container *ngIf="editingUsuario?.id !== usuario.id">
+                        <button class="btn-edit" (click)="iniciarEdicion(usuario)">Editar</button>
+                        <button class="btn-delete" (click)="eliminarUsuario(usuario.id)">Eliminar</button>
+                    </ng-container>
+                    <ng-container *ngIf="editingUsuario?.id === usuario.id">
+                        <div class="edit-password">
+                            <input type="password" [(ngModel)]="editClave" placeholder="Nueva clave (opcional)">
+                        </div>
+                        <button class="btn-save" (click)="guardarEdicion()">Guardar</button>
+                        <button class="btn-cancel" (click)="cancelarEdicion()">Cancelar</button>
+                    </ng-container>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -24,6 +24,8 @@ export class Login {
 
     private readonly router: Router = inject(Router);
 
+    modoRegistro: boolean = false;
+
     readonly form: FormGroup = new FormGroup({
         nombre: new FormControl("", [Validators.required]),
         clave: new FormControl("", [Validators.required])
@@ -51,6 +53,31 @@ export class Login {
         });
 
 
+    }
+
+    registrarse() {
+        if (!this.form.valid){
+            this.messageService.add({severity: "error", summary: "Los campos del formulario son requeridos"});
+            return;
+        }
+
+        const nombre: string = this.form.value.nombre
+        const clave: string = this.form.value.clave
+
+        this.loginApiClient.registro(nombre, clave).subscribe({
+            next: (data)=>{
+                this.messageService.add({severity: "success", summary: "Usuario registrado exitosamente. Ahora puedes iniciar sesión."});
+                this.modoRegistro = false;
+            },
+            error: (err)=>{
+                this.messageService.add({severity: "error", summary: err.error?.message || "Ha ocurrido un error al registrar el usuario"})
+            }
+        });
+    }
+
+    toggleModo() {
+        this.modoRegistro = !this.modoRegistro;
+        this.form.reset();
     }
 
 }

@@ -1,8 +1,58 @@
-<h2>
-    <ul>
-        <li *ngFor="let cliente of clientes$ | async">
-            {{ cliente.nombre }}  ({{ cliente.estado}})
-            <button (click)="eliminarCliente(cliente.id)">Eliminar</button>
-        </li>
-    </ul>
-</h2>
+<div class="clientes-container">
+    <h1>Gestión de Clientes</h1>
+    
+    <button class="btn-primary" (click)="toggleCreateForm()">Nuevo Cliente</button>
+    
+    <!-- Create Form -->
+    <div *ngIf="showCreateForm" class="form-container">
+        <h3>Crear Nuevo Cliente</h3>
+        <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" [(ngModel)]="nuevoClienteNombre" placeholder="Nombre del cliente">
+        </div>
+        <div class="form-actions">
+            <button class="btn-primary" (click)="crearCliente()">Guardar</button>
+            <button class="btn-secondary" (click)="toggleCreateForm()">Cancelar</button>
+        </div>
+    </div>
+    
+    <!-- Clients List -->
+    <table class="clientes-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cliente of clientes$ | async">
+                <td>{{ cliente.id }}</td>
+                <td *ngIf="editingCliente?.id !== cliente.id">{{ cliente.nombre }}</td>
+                <td *ngIf="editingCliente?.id === cliente.id">
+                    <input type="text" [(ngModel)]="editNombre">
+                </td>
+                <td *ngIf="editingCliente?.id !== cliente.id">
+                    <span [class]="'status-' + cliente.estado.toLowerCase()">{{ cliente.estado }}</span>
+                </td>
+                <td *ngIf="editingCliente?.id === cliente.id">
+                    <select [(ngModel)]="editEstado">
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="BAJA">BAJA</option>
+                    </select>
+                </td>
+                <td>
+                    <ng-container *ngIf="editingCliente?.id !== cliente.id">
+                        <button class="btn-edit" (click)="iniciarEdicion(cliente)">Editar</button>
+                        <button class="btn-delete" (click)="eliminarCliente(cliente.id)">Eliminar</button>
+                    </ng-container>
+                    <ng-container *ngIf="editingCliente?.id === cliente.id">
+                        <button class="btn-save" (click)="guardarEdicion()">Guardar</button>
+                        <button class="btn-cancel" (click)="cancelarEdicion()">Cancelar</button>
+                    </ng-container>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

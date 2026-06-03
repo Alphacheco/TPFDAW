@@ -25,11 +25,6 @@ export class ProyectoNuevo {
     private readonly router = inject(Router);
 
     crearProyecto() {
-        console.log({
-            nombre: this.nombre,
-            estado: this.estado
-        })
-
         this.proyectosApiClient.crearProyecto({
             nombre: this.nombre,
             estado: this.estado,

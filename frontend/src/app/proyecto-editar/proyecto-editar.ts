@@ -37,8 +37,8 @@ export class ProyectoEditar {
                 this.nombre = proyecto.nombre;
                 this.estado = proyecto.estado;
 
-                if (proyecto.id) {
-                    this.idCliente = proyecto.id;
+                if (proyecto.cliente?.id) {
+                    this.idCliente = proyecto.cliente.id;
                 }
 
             });

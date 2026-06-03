@@ -4,6 +4,7 @@ import { Proyectos } from './proyectos/proyectos';
 import { ProyectoDetalle } from './proyecto-detalle/proyecto-detalle';
 import { ProyectoNuevo } from './proyecto-nuevo/proyecto-nuevo';
 import { ProyectoEditar } from './proyecto-editar/proyecto-editar';
+import { authGuard } from './auth/auth.guard';
 
 
 export const routes: Routes = [
@@ -13,26 +14,36 @@ export const routes: Routes = [
     },
     {
         path: "proyectos",
-        component: Proyectos
+        component: Proyectos,
+        canActivate: [authGuard]
     },
     {
         path: "proyectos/nuevo",
-        component: ProyectoNuevo
+        component: ProyectoNuevo,
+        canActivate: [authGuard]
     },
     {
         path: 'proyectos/:id/editar',
-        component: ProyectoEditar
+        component: ProyectoEditar,
+        canActivate: [authGuard]
     },
     {
         path: "proyectos/:id",
-        component: ProyectoDetalle
+        component: ProyectoDetalle,
+        canActivate: [authGuard]
+    },
+    {
+        path: 'clientes',
+        loadComponent: () => import('./clientes/clientes').then(m => m.ClientesComponent),
+        canActivate: [authGuard]
+    },
+    {
+        path: 'usuarios',
+        loadComponent: () => import('./usuarios/usuarios').then(m => m.UsuariosComponent),
+        canActivate: [authGuard]
     },
     {
         path: "**",
         redirectTo: "login"
-    },
-    {
-        path: 'clientes',
-        loadComponent: () => import('./clientes/clientes').then(m => m.ClientesComponent)
     }
 ];

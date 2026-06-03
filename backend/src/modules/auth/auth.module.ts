@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { AuthController } from "./controllers/auth.controller";
+import { UsuariosController } from "./controllers/usuarios.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Usuario } from "./entitites/usuario.entity";
 import { JwtModule } from "@nestjs/jwt";
@@ -9,7 +10,7 @@ import { AuthService } from "./services/auth.service";
 import { AuthGuard } from "./guards/auth.guard";
 
 @Module({
-    controllers: [AuthController],
+    controllers: [AuthController, UsuariosController],
     providers: [UsuariosService, AuthService, AuthGuard],
     imports: [TypeOrmModule.forFeature([Usuario]),
     JwtModule.registerAsync({

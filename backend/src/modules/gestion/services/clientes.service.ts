@@ -69,4 +69,20 @@ export class ClientesService {
         const existe: boolean = await this.repository.exists({ where: { id, estado: EstadosClientesEnum.ACTIVO } });
         return existe;
     }
+
+    async eliminarCliente(id: number): Promise<void> {
+        const cliente: Cliente | null = await this.repository.findOneBy({ id });
+
+        if (!cliente) {
+            throw new BadRequestException('Cliente no encontrado');
+        }
+
+        const relacionadoConProyectos: boolean = await this.proyectosService.existeProyectoPorIdCliente(id);
+
+        if (relacionadoConProyectos) {
+            throw new BadRequestException('No se puede eliminar un cliente con proyectos relacionados');
+        }
+
+        await this.repository.delete(id);
+    }
 }

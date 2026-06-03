@@ -9,9 +9,18 @@ export interface ClienteDTO {
     estado: string;
 }
 
+export interface CreateClienteDTO {
+    nombre: string;
+}
+
+export interface UpdateClienteDTO {
+    nombre?: string;
+    estado?: string;
+}
+
 @Injectable ({ providedIn: 'root'})
 export class ClientesApiClient {
-    private apiUrl = '/api';
+    private apiUrl = '/api/v1';
 
     constructor(private http: HttpClient) {}
 
@@ -22,5 +31,16 @@ export class ClientesApiClient {
     getClientes(): Observable<ClienteDTO[]> {
         return this.http.get<ClienteDTO[]>(`${this.apiUrl}/clientes`);
     }
-    
+
+    createCliente(dto: CreateClienteDTO): Observable<{ id: number }> {
+        return this.http.post<{ id: number }>(`${this.apiUrl}/clientes`, dto);
+    }
+
+    updateCliente(id: number, dto: UpdateClienteDTO): Observable<void> {
+        return this.http.put<void>(`${this.apiUrl}/clientes/${id}`, dto);
+    }
+
+    getActiveClientes(): Observable<ClienteDTO[]> {
+        return this.http.get<ClienteDTO[]>(`${this.apiUrl}/clientes?estado=ACTIVO`);
+    }
 }

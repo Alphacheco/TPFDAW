@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotImplementedException, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { CreateClienteDto } from "../dtos/input/create-cliente.dto";
 import { ApiBearerAuth, ApiOkResponse, ApiQuery } from "@nestjs/swagger";
 import { ListClienteDTO } from "../dtos/output/list-cliente.dto";
@@ -37,6 +37,13 @@ export class ClientesController {
     @Get()
     async obtenerClientes(@Query("estado") estado: EstadosClientesEnum): Promise<ListClienteDTO[]> {
         return await this.clientesService.obtenerClientes(estado);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Delete(":id")
+    async eliminarCliente(@Param("id") id: number): Promise<void> {
+        await this.clientesService.eliminarCliente(id);
     }
 
 }

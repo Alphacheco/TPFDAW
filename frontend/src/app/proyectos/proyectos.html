@@ -16,6 +16,8 @@
     <div class="acciones">
         <a class="btn-nuevo" routerLink="/proyectos/nuevo">Nuevo proyecto</a>
         <button class="btn-exportar" (click)="exportarCSV()">Exportar a CSV</button>
+        <button class="btn-clientes" (click)="irAClientes()">Gestión de Clientes</button>
+        <button class="btn-usuarios" (click)="irAUsuarios()">Gestión de Usuarios</button>
     </div>
 
     <ul class="lista-proyectos" *ngIf="!cargando && !mensajeError &&proyectos.length > 0">

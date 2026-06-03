@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { RouterLink } from "@angular/router";
+import { RouterLink, Router } from "@angular/router";
 import { ProyectosApiClient, ListProyectoDTO } from "./proyectos-api-client";
 
 @Component({
@@ -13,6 +13,7 @@ import { ProyectosApiClient, ListProyectoDTO } from "./proyectos-api-client";
 export class Proyectos {
     private readonly proyectosApiClient: ProyectosApiClient = inject(ProyectosApiClient);
     private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
+    private readonly router: Router = inject(Router);
 
     proyectos: ListProyectoDTO[] = [];
     cargando: boolean = true;
@@ -21,7 +22,6 @@ export class Proyectos {
     ngOnInit(): void {
         this.proyectosApiClient.obtenerProyectos().subscribe({
             next: (data) => {
-                console.log ('proyectos recibidos', data);
                 this.proyectos = data;
                 this.cargando = false;
                 this.changeDetector.markForCheck();
@@ -44,5 +44,13 @@ export class Proyectos {
             a.click();
             window.URL.revokeObjectURL(url);
         });
+    }
+
+    irAUsuarios() {
+        this.router.navigateByUrl('/usuarios');
+    }
+
+    irAClientes() {
+        this.router.navigateByUrl('/clientes');
     }
 }

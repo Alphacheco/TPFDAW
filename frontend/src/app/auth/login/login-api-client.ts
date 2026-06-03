@@ -14,4 +14,8 @@ export class LoginApiClient {
 
     }
 
+    registro(nombre: string, clave: string): Observable<{ id: number }> {
+        return this.client.post<{ id: number }>("/api/v1/auth/registro", { nombre, clave });
+    }
+
 }
