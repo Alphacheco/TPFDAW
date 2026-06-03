@@ -35,14 +35,21 @@ export class Proyectos {
         });
     }
 
-    exportarCSV() {
-        this.proyectosApiClient.exportarCSV().subscribe(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'proyectos.csv';
-            a.click();
-            window.URL.revokeObjectURL(url);
+    exportarCSV(): void {
+        this.proyectosApiClient.exportarCSV().subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'proyectos.csv';
+                a.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: (err) => {
+                console.error('error exportar csv', err);
+                this.mensajeError = 'No se pudo exportar el CSV';
+                this.changeDetector.markForCheck();
+            }
         });
     }
 }

@@ -6,6 +6,7 @@ import { ProyectoDetalleApiClient, ProyectoDTO } from "./proyecto-detalle-api-cl
 
 @Component({
     selector: "app-proyecto-detalle",
+    standalone: true,
     templateUrl: "./proyecto-detalle.html",
     styleUrl: "./proyecto-detalle.css",
     imports: [CommonModule, FormsModule]
@@ -22,6 +23,53 @@ export class ProyectoDetalle {
     mensajeError: string = "";
     idProyecto: number = 0;
     nuevaDescripcion: string = "";
+    tareaEditando: any = null;
+    descripcionEditando: string = "";
+    estadoEditando: string = "";
+    editandoProyecto: boolean = false;
+    nombreProyectoEdit: string = "";
+    estadoProyectoEdit: string= "";
+    idClienteProyectoEdit?: number;
+
+    empezarEdicionProyecto() {
+        if(!this.proyecto) return;
+        this.editandoProyecto = true;
+        this.nombreProyectoEdit = this.proyecto.nombre;
+        this.estadoProyectoEdit = this.proyecto.estado;
+       
+    }
+
+    cancelarEdicionProyecto() {
+        this.editandoProyecto = false;
+    }
+
+    guardarEdicionProyecto() {
+        this.proyectoDetalleApiClient.updateProyecto(this.idProyecto, {
+            nombre: this.nombreProyectoEdit,
+            estado: this.estadoProyectoEdit,
+            
+        }).subscribe({
+            next: () => {
+                this.editandoProyecto = false;
+                this.recargarProyecto();
+            },
+            error: (err) => {
+                console.error("error actualizando proyecto",err);
+            }
+        });
+    }
+
+    editarTarea(tarea: any) {
+        this.tareaEditando = tarea;
+        this.descripcionEditando = tarea.descripcion;
+        this.estadoEditando = tarea.estado;
+    }
+
+    cancelarEdicion() {
+        this.tareaEditando = null;
+        this.descripcionEditando = "";
+        this.estadoEditando = "";
+    }
 
     ngOnInit(): void {
         this.idProyecto = Number(this.route.snapshot.paramMap.get("id"));
@@ -63,5 +111,25 @@ export class ProyectoDetalle {
                 this.changeDetectorRef.detectChanges();
             }
         });
+    }
+
+    guardarEdicionTarea() {
+        if(!this.tareaEditando) return;
+        this.proyectoDetalleApiClient
+            .updateTarea(this.idProyecto, this.tareaEditando.id, {
+                descripcion: this.descripcionEditando,
+                estado: this.estadoEditando
+            })
+            .subscribe({
+                next: () => {
+                    this.tareaEditando = null;
+                    this.descripcionEditando = "";
+                    this.estadoEditando = "";
+                    this.recargarProyecto();
+                },
+                error: (err) => {
+                    console.error("error actualizando tarea", err);
+                }
+            })
     }
 }

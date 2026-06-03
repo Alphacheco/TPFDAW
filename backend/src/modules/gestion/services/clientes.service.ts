@@ -41,6 +41,24 @@ export class ClientesService {
         await this.repository.save(cliente);
     }
 
+    async eliminarCliente(id: number): Promise<void> {
+
+        const cliente: Cliente | null = await this.repository.findOneBy({ id });
+
+        if (!cliente) {
+            throw new BadRequestException('Cliente no encontrado');
+        }
+
+        const relacionadoConProyectos: boolean = await this.proyectosService.existeProyectoPorIdCliente(id);
+
+        if (relacionadoConProyectos) {
+            throw new BadRequestException('No se puede dar de baja un cliente con proyectos relacionados');
+        }
+
+        cliente.estado = EstadosClientesEnum.BAJA;
+        await this.repository.save(cliente);
+    }
+
     async obtenerClientes(estado: EstadosClientesEnum): Promise<ListClienteDTO[]> {
 
         const whereCondition: FindOptionsWhere<ListClienteDTO> = {}
@@ -49,7 +67,11 @@ export class ClientesService {
             whereCondition.estado = estado
         }
 
-        const clientes: Cliente[] = await this.repository.find({ select: { id: true, nombre: true, estado: true }, order: { id: 'ASC' }, where: whereCondition });
+        const clientes: Cliente[] = await this.repository.find({
+            select: { id: true, nombre: true, telefono: true, email: true, estado: true },
+            order: { id: 'ASC' },
+            where: whereCondition
+        });
 
         const dtoList: ListClienteDTO[] = [];
 
@@ -57,6 +79,8 @@ export class ClientesService {
             const dto = new ListClienteDTO();
             dto.id = c.id;
             dto.nombre = c.nombre;
+            dto.telefono = c.telefono;
+            dto.email = c.email;
             dto.estado = c.estado;
             dtoList.push(dto);
         }

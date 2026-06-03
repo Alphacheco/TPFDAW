@@ -1,31 +1,90 @@
-:host {
+
+
+.loginVista {
+    font-family: archivo, sans-serif;
+    color: #3c3c3c;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height:100vh;
+    
 }
 
-#main {
+.loginVista h1 {
+    
+    margin-bottom: 50px;
+}
+
+
+.loginCont {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 55vh;
-    max-width: 20rem;
-    width: 80vw;
-    background-color: lightcyan;
+    gap: 10px;
+    padding: 2rem;
+    border:none;
     border-radius: 25px;
+    margin-bottom: 50px;
+    border: 2px solid #3c3c3c;
 }
 
-#nombre{
-    margin-bottom: 1rem;
+
+
+.loginInput {
+    padding-left: auto;
+    
+    border-radius: 0.25rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    
 }
 
-#clave{
-    margin-bottom: 1rem;
+.loginInput  h4{
+margin: 0px 15px 0px 0px;
 }
 
-#header{
-    text-align: center;
+.loginInput input,
+.loginInput ::ng-deep input,
+.p-password-input 
+.loginInput input:-webkit-autofill,
+.loginInput ::ng-deep input:-webkit-autofill,
+.p-password-input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #3c3c3c inset !important;
+    -webkit-text-fill-color: #EFEEDF !important;
+    font-family: archivo, sans-serif !important;
+    border: 1px solid #3c3c3c !important;
+    border-radius: 10px !important;
+    padding: 5px !important;
+    height: fit-content !important;
+    margin-left:auto !important;
+    text-align: center !important;
+}
+
+
+::ng-deep .loginButton .p-button {
+    background-color: #58B14B !important;
+    color: #EFEEDF !important;
+    border: none !important;
+    border-radius:10px !important;
+    padding: 10px !important;
+    cursor: pointer !important;
+    font-family: archivo, sans-serif !important;
+    font-weight: bold !important;
+    margin-bottom: auto !important;
+}
+
+::ng-deep .loginButton .p-button:hover {
+    transform: scale(1.1) !important;
+    transition: transform 0.2s ease-in-out !important;
+}
+
+
+::ng-deep .loginButton .p-button-label {
+    font-family: archivo, sans-serif !important;
+    font-weight: bold !important;
 }

@@ -30,4 +30,19 @@ export class ProyectoDetalleApiClient {
             { descripcion }
         );
     }
+
+    updateTarea(idProyecto: number, idTarea: number, data: { descripcion: string, estado?: string }): Observable<void> {
+        return this.client.put<void>(
+            `/api/v1/proyectos/${idProyecto}/tareas/${idTarea}`,
+            data
+        );
+    }
+
+    updateProyecto(idProyecto: number, data: { nombre: string, estado: string, idCliente?: number }): Observable<void> {
+        return this.client.put<void>(
+            `/api/v1/proyectos/${idProyecto}`,
+            data
+
+        );
+    }
 }

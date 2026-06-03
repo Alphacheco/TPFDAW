@@ -14,9 +14,6 @@ export class ProyectoDTO {
     cliente!: string;
 
     @ApiProperty()
-    idCliente?: number;
-
-    @ApiProperty()
     tareas!: ListTareaDTO[];
 
 }

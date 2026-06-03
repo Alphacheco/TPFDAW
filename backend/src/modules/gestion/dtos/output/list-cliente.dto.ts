@@ -9,6 +9,12 @@ export class ListClienteDTO {
     @ApiProperty()
     nombre!: string;
 
+    @ApiProperty({ required: false })
+    telefono!: string | null;
+
+    @ApiProperty({ required: false })
+    email!: string | null;
+
     @ApiProperty()
     estado!: EstadosClientesEnum;
 

@@ -1,0 +1,94 @@
+.clientes-vista {
+    color: #3c3c3c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Archivo', sans-serif;
+    margin-bottom: 80px;
+}
+
+.crear-cliente {
+    width: 75%;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1.4fr auto;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.crear-cliente input,
+.clientes-vista input,
+.clientes-vista select {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-family: 'Archivo', sans-serif;
+    color: #EFEEDF;
+    background-color: #3c3c3c;
+}
+
+.crear-cliente input:-webkit-autofill,
+.crear-cliente input:-webkit-autofill:hover,
+.crear-cliente input:-webkit-autofill:focus,
+.clientes-vista input:-webkit-autofill,
+.clientes-vista input:-webkit-autofill:hover,
+.clientes-vista input:-webkit-autofill:focus,
+.clientes-vista select:-webkit-autofill,
+.clientes-vista select:-webkit-autofill:hover,
+.clientes-vista select:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #3c3c3c inset;
+    -webkit-text-fill-color: #EFEEDF;
+    caret-color: #EFEEDF;
+    border: none;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+.clientes-vista table {
+    width: 85%;
+    border-collapse: collapse;
+    margin-top: 18px;
+}
+
+.clientes-vista th,
+.clientes-vista td {
+    border-bottom: 1px solid #3c3c3c;
+    padding: 8px;
+    text-align: center;
+}
+
+.clientes-vista th {
+    font-weight: normal;
+}
+
+.clientes-vista button {
+    background-color: #58B14B;
+    color: #EFEEDF;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 600;
+    margin: 0 4px;
+}
+
+.clientes-vista button:hover {
+    transform: scale(1.06);
+    transition: transform 0.2s ease-in-out;
+}
+
+@media (max-width: 768px) {
+    .crear-cliente {
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+
+    .clientes-vista table {
+        width: 100%;
+        font-size: 0.92rem;
+    }
+
+    .clientes-vista {
+        padding: 12px;
+    }
+}

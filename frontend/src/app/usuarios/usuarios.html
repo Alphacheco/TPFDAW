@@ -1,0 +1,84 @@
+<div class="usuarios-vista">
+    <h1>Usuarios</h1>
+
+    <div class="crear-usuario">
+        <input type="text" [(ngModel)]="nombreNuevo" placeholder="Nombre de usuario">
+        <input type="password" [(ngModel)]="claveNueva" placeholder="Clave">
+        <select [(ngModel)]="estadoNuevo">
+            <option value="ACTIVO">ACTIVO</option>
+            <option value="BAJA">BAJA</option>
+        </select>
+        <button type="button" (click)="crearUsuario()">Agregar usuario</button>
+    </div>
+
+    <div *ngIf="cargando">
+        Cargando usuarios...
+    </div>
+
+    <div *ngIf="!cargando && mensajeErrorCarga">
+        {{ mensajeErrorCarga }}
+    </div>
+
+    <div *ngIf="mensajeErrorOperacion">
+        {{ mensajeErrorOperacion }}
+    </div>
+
+    <div *ngIf="!cargando && !mensajeErrorCarga && usuarios.length === 0">
+        No hay usuarios cargados.
+    </div>
+
+    <table *ngIf="!cargando && !mensajeErrorCarga && usuarios.length > 0">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Clave</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let usuario of usuarios">
+                <td>
+                    <ng-container *ngIf="usuarioEditandoId !== usuario.id; else editarNombre">
+                        {{ usuario.nombre }}
+                    </ng-container>
+                    <ng-template #editarNombre>
+                        <input type="text" [(ngModel)]="nombreEditando" name="nombreEditando">
+                    </ng-template>
+                </td>
+
+                <td>
+                    <ng-container *ngIf="usuarioEditandoId !== usuario.id; else editarEstado">
+                        {{ usuario.estado }}
+                    </ng-container>
+                    <ng-template #editarEstado>
+                        <select [(ngModel)]="estadoEditando" name="estadoEditando">
+                            <option value="ACTIVO">ACTIVO</option>
+                            <option value="BAJA">BAJA</option>
+                        </select>
+                    </ng-template>
+                </td>
+
+                <td>
+                    <ng-container *ngIf="usuarioEditandoId !== usuario.id; else editarClave">
+                        ******
+                    </ng-container>
+                    <ng-template #editarClave>
+                        <input type="password" [(ngModel)]="claveEditando" name="claveEditando" placeholder="Nueva clave (opcional)">
+                    </ng-template>
+                </td>
+
+                <td>
+                    <ng-container *ngIf="usuarioEditandoId !== usuario.id; else accionesEdicion">
+                        <button (click)="empezarEdicion(usuario)">Editar</button>
+                    </ng-container>
+
+                    <ng-template #accionesEdicion>
+                        <button type="button" (click)="guardarEdicion()">Guardar</button>
+                        <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+                    </ng-template>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

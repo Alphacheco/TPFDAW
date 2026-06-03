@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotImplementedException, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Header, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { CreateProyectoDto } from "../dtos/input/create-proyecto.dto";
 import { UpdateProyectoDto } from "../dtos/input/update-proyecto.dto";
 import { ApiBearerAuth, ApiOkResponse } from "@nestjs/swagger";
@@ -6,9 +6,6 @@ import { ListProyectoDTO } from "../dtos/output/list-proyecto.dto";
 import { ProyectoDTO } from "../dtos/output/proyecto.dto";
 import { ProyectosService } from "../services/proyectos.service";
 import { AuthGuard } from "../../auth/guards/auth.guard";
-import { Res } from '@nestjs/common';
-import type { Response } from 'express';
-import { useContainer } from "class-validator";
 
 @Controller('proyectos')
 export class ProyectosController {
@@ -44,15 +41,11 @@ export class ProyectosController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Get('exportar')
-    async exportarCSV(
-        @Res() response: Response
-    ): Promise<void> {
-        const csv = await this.proyectosService.exportarCSV();
+    @Header('Content-Type', 'text/csv; charset=utf-8')
+    @Header('Content-Disposition', 'attachment; filename="proyectos.csv"')
+    async exportarCSV(): Promise<string> {
 
-        response.setHeader('Content-Type', 'text/csv');
-        response.setHeader('Content-Disposition', 'attachment; filename="proyectos.csv"');
-
-        response.send(csv);
+        return await this.proyectosService.exportarCSV();
     }
 
     @ApiBearerAuth()

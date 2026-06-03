@@ -1,7 +1,7 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateProyectoDto } from "../dtos/input/create-proyecto.dto";
 import { Proyecto } from "../entities/proyecto.entity";
-import { Repository, In } from "typeorm";
+import { Repository } from "typeorm";
 import { EstadosProyectosEnum } from "../enums/estados-proyectos.enum";
 import { UpdateProyectoDto } from "../dtos/input/update-proyecto.dto";
 import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/common";
@@ -75,7 +75,6 @@ export class ProyectosService {
                 dto.cliente.id = p.cliente.id
                 dto.cliente.nombre = p.cliente.nombre;
                 dto.cliente.estado = p.cliente.estado
-                dto.cliente.id = p.cliente.id;
             }
             dtoList.push(dto);
         }
@@ -113,26 +112,39 @@ export class ProyectosService {
 
     }
 
-    async existeProyectoPorIdCliente(idCliente: number): Promise<boolean> {
+    async exportarCSV(): Promise<string> {
 
-        const existe: boolean = await this.repository.exists({ where: { cliente: { id: idCliente }, estado: In([EstadosProyectosEnum.ACTIVO, EstadosProyectosEnum.FINALIZADO]) } });
-        return existe;
+        const proyectos: Proyecto[] = await this.repository.find({ relations: ['cliente'], order: { id: 'ASC' } });
+
+        const encabezado: string = 'id,nombre,estado,cliente\n';
+
+        const filas: string[] = proyectos.map((proyecto) => {
+            const nombreCliente: string = proyecto.cliente ? proyecto.cliente.nombre : 'Proyecto interno';
+            return [
+                proyecto.id.toString(),
+                this.escaparCSV(proyecto.nombre),
+                this.escaparCSV(proyecto.estado),
+                this.escaparCSV(nombreCliente)
+            ].join(',');
+        });
+
+        return encabezado + filas.join('\n');
     }
 
-    async exportarCSV(): Promise<string> {
-        const proyectos = await this.repository.find({ relations: ['cliente', 'tareas'], order: { id: 'ASC', tareas: { id: 'ASC' } } });
+    private escaparCSV(valor: string): string {
 
-        let csv = 'Proyecto,Estado Proyecto,Cliente,Tarea,Estado Tarea\n';
-        for (const proyecto of proyectos) {
-            if (proyecto.tareas.length === 0) {
-                csv += `"${proyecto.nombre}",` + `"${proyecto.estado}",` + `"${proyecto.cliente?.nombre ?? 'INTERNO'}",,,\n`;
-                continue;
-            }
-            for (const tarea of proyecto.tareas) {
-                csv += `"${proyecto.nombre}",` + `"${proyecto.estado}",` + `"${proyecto.cliente?.nombre ?? 'INTERNO'}",` + `"${tarea.descripcion}",` + `"${tarea.estado}"\n`;
-            }
-        }
-        return csv;
+        const valorNormalizado: string = (valor ?? '').replace(/\r?\n|\r/g, ' ');
+        const valorEscapado: string = valorNormalizado.replace(/"/g, '""');
+        return `"${valorEscapado}"`;
+    }
+
+    async existeProyectoPorIdCliente(idCliente: number): Promise<boolean> {
+
+        const existe: boolean = await this.repository.exists({
+             where: { cliente: { id: idCliente } }
+        });
+        
+        return existe;
     }
 
 }

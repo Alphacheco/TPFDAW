@@ -1,2 +1,18 @@
-<router-outlet />
-<p-toast />
+<div class="app-shell">
+    <main class="contenido-principal">
+        <router-outlet />
+    </main>
+
+    @if (mostrarFooter()) {
+        <footer class="footer">
+            <a routerLink="/proyectos"><img src="/proyectos.svg" alt="Proyectos"><p>Proyectos</p></a>
+            <a routerLink="/clientes"><img src="/clientes.svg" alt="Clientes"><p>Clientes</p></a>
+            <a routerLink="/usuarios"><img src="/usuarios.svg" alt="Usuarios"><p>Usuarios</p></a>
+            <button type="button" (click)="logout()"><img src="/logout.svg" alt="Logout"><p>Logout</p></button>
+        </footer>
+    }
+
+    <p-toast />
+</div>
+
+

@@ -1,26 +1,38 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import id from '@angular/common/locales/extra/id';
 
-export interface ClienteDTO {
+
+
+export interface ListClienteDTO {
     id: number;
     nombre: string;
+    telefono: string | null;
+    email: string | null;
     estado: string;
 }
 
+
 @Injectable ({ providedIn: 'root'})
 export class ClientesApiClient {
-    private apiUrl = '/api';
+    private readonly client: HttpClient = inject(HttpClient);
 
-    constructor(private http: HttpClient) {}
-
-    deleteCliente(id: number): Observable<void>{
-        return this.http.delete<void>(`${this.apiUrl}/clientes/${id}`);
+    getClientes(estado?: string): Observable<ListClienteDTO[]> {
+        const url = estado ? `/api/v1/clientes?estado=${estado}` : '/api/v1/clientes';
+        return this.client.get<ListClienteDTO[]>(url);
     }
 
-    getClientes(): Observable<ClienteDTO[]> {
-        return this.http.get<ClienteDTO[]>(`${this.apiUrl}/clientes`);
+    crearCliente(dto: { nombre: string; telefono: string; email: string }): Observable<{ id: number}> {
+        return this.client.post<{ id: number }>(`/api/v1/clientes`, dto);
     }
+
+    actualizarCliente(id: number, dto: { nombre: string; telefono: string; email: string; estado: string }): Observable<void> {
+        return this.client.put<void>(`/api/v1/clientes/${id}`, dto);
+    }
+    
+    deleteCliente(id: number): Observable<void> {
+        return this.client.delete<void>(`/api/v1/clientes/${id}`);
+    }
+
     
 }

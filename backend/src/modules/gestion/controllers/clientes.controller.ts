@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotImplementedException, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { CreateClienteDto } from "../dtos/input/create-cliente.dto";
 import { ApiBearerAuth, ApiOkResponse, ApiQuery } from "@nestjs/swagger";
 import { ListClienteDTO } from "../dtos/output/list-cliente.dto";
@@ -24,6 +24,13 @@ export class ClientesController {
     @Put(":id")
     async actualizarCliente(@Param("id") id: number, @Body() dto: UpdateClienteDto): Promise<void> {
         await this.clientesService.actualizarCliente(id, dto);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Delete(':id')
+    async eliminarCliente(@Param('id') id: number): Promise<void> {
+        await this.clientesService.eliminarCliente(id);
     }
 
     @ApiBearerAuth()

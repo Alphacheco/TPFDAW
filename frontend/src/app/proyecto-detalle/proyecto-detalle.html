@@ -1,4 +1,4 @@
-<div>
+<div class="proyectoDetalleVista">
     <h1> Detalle del Proyecto </h1>
     
     <div *ngIf="cargando">
@@ -10,21 +10,34 @@
     </div>
 
     <div *ngIf="!cargando && proyecto">
-        <h2> {{ proyecto.nombre }} </h2>
+        <div *ngIf="!editandoProyecto; else editarProyectoForm" class="encabezadoProyecto">
+            <h2> {{ proyecto.nombre }}</h2>
+            <p>Estado: {{ proyecto.estado }}</p>
+            <p *ngIf="proyecto.cliente">Cliente: {{ proyecto.cliente }}</p>
+            <p *ngIf="!proyecto.cliente">Proyecto interno</p>
+            <button (click)="empezarEdicionProyecto()">Editar proyecto</button>
+        </div>
 
-        <p>
-            Estado: {{ proyecto.estado  }}
-        </p>
+        <ng-template #editarProyectoForm>
+            <h2>
+                <input type="text" [(ngModel)]="nombreProyectoEdit" placeholder="Nombre del proyecto">
+            </h2>
 
-        <p *ngIf = "proyecto.cliente">
-            Cliente: {{ proyecto.cliente }}
-        </p>
+            <p>
+                Estado:
+                <select [(ngModel)]="estadoProyectoEdit">
+                    <option value="ACTIVO">Activo</option>
+                    <option value="FINALIZADO">Finalizado</option>
+                    <option value="BAJA">Baja</option>
+                </select>
+            </p>
 
-        <p *ngIf = "!proyecto.cliente">
-            Proyecto interno
-        </p>
+            <button (click)="guardarEdicionProyecto()">Guardar</button>
+            <button (click)="cancelarEdicionProyecto()">Cancelar</button>
 
-        <div>
+        </ng-template>
+
+        <div class="crearTareaFila">
             <input 
                 type="text"
                 [(ngModel)] = "nuevaDescripcion"
@@ -42,9 +55,23 @@
         </div>
 
 
-        <ul *ngIf="proyecto.tareas.length > 0">
+        <ul *ngIf="proyecto.tareas.length > 0" class="listaTareas">
             <li *ngFor = "let tarea of proyecto.tareas">
-                {{ tarea.descripcion }} - {{ tarea.estado }}
+                <ng-container *ngIf="tareaEditando && tareaEditando.id === tarea.id; else vistaTarea">
+                    <input type="text" [(ngModel)]="descripcionEditando"/>
+                    <select [(ngModel)]="estadoEditando">
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="FINALIZADA">Finalizada</option>
+                        <option value="BAJA">Baja</option>
+                    </select>
+                    <button (click)="guardarEdicionTarea()">Guardar</button>
+                    <button (click)="cancelarEdicion()">Cancelar</button>
+                </ng-container>
+                <ng-template #vistaTarea>
+                     {{ tarea.descripcion }} - {{ tarea.estado }}
+                <button (click)="editarTarea(tarea)">Editar</button>
+                </ng-template>
+               
             </li>
         </ul>
     </div>

@@ -1,12 +1,12 @@
-<div>
+<div class="proyectoNuevoVista">
     <h1>Nuevo Proyecto</h1>
-    <form (ngSubmit)="crearProyecto()">
-        <div>
+    <form (ngSubmit)="crearProyecto()" class="nuevoProyectoForm">
+        <div class="campoFila">
             <label >Nombre:</label>
             <input type="text" [(ngModel)]="nombre" name="nombre" required>
         </div>
         
-        <div>
+        <div class="campoFila">
             <label>Estado:</label>
             <select [(ngModel)]="estado" name="estado" required>
                 <option value="ACTIVO">Activo</option>
@@ -14,17 +14,22 @@
                 <option value="BAJA">Baja</option>
             </select>
         </div>
-
-        <div>
+        <div class="campoFila checkboxFila">
+            <label>
+                <input type="checkbox" [(ngModel)]="esInterno" name="esInterno">
+                Proyecto interno
+            </label>
+        </div>
+        <div *ngIf="!esInterno" class="campoFila">
             <label>Cliente:</label>
-            <select [(ngModel)]="idCliente" name="idCliente">
-                <option [value]="undefined">Proyecto Interno</option>
-                <option *ngFor="let cliente of clientes" [value]="cliente.id">
+            <select [(ngModel)]="idClienteSeleccionado" name="idClienteSeleccionado" required>
+                <option [ngValue]="null" disabled>Selecciona un cliente activo</option>
+                <option *ngFor="let cliente of clientesActivos" [ngValue]="cliente.id">
                     {{ cliente.nombre }}
                 </option>
             </select>
         </div>
 
-        <button type="submit">Crear</button>
+        <button type="submit" class="btnCrear">Crear</button>
     </form>
 </div>

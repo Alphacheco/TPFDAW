@@ -1,4 +1,4 @@
-<div class="contenedor">
+<div class="proyectosVista">
     <h1>Proyectos</h1>
 
     <div *ngIf="cargando">
@@ -13,27 +13,36 @@
         No hay proyectos cargados.
     </div>
 
-    <div class="acciones">
-        <a class="btn-nuevo" routerLink="/proyectos/nuevo">Nuevo proyecto</a>
-        <button class="btn-exportar" (click)="exportarCSV()">Exportar a CSV</button>
-    </div>
+    
 
-    <ul class="lista-proyectos" *ngIf="!cargando && !mensajeError &&proyectos.length > 0">
-        <li *ngFor="let proyecto of proyectos"> <div class="fila-principal"><a [routerLink]="['/proyectos' , proyecto.id]">
-            <strong> {{ proyecto.nombre }} </strong>
-            </a>
-            <span class="estado">{{ proyecto.estado }}</span>
-
-            <a class="btn-editar" [routerLink]="['/proyectos', proyecto.id, 'editar']">Editar</a>
-
-            <div class="cliente" *ngIf="proyecto.cliente">
-                - Cliente: {{ proyecto.cliente.nombre }}
-            </div>
-
-            <div class="cliente" *ngIf="!proyecto.cliente">
-                - Proyecto interno
-            </div>
-            </div>
-        </li>
-    </ul>
+    <table class="tabla-proyectos" *ngIf="!cargando && !mensajeError && proyectos.length > 0">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Cliente</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let proyecto of proyectos">
+                <td>
+                    <a [routerLink]="['/proyectos', proyecto.id]">
+                        <strong>{{ proyecto.nombre }}</strong>
+                    </a>
+                </td>
+                <td>{{ proyecto.estado }}</td>
+                <td>
+                    <ng-container *ngIf="proyecto.cliente; else interno">
+                        {{ proyecto.cliente.nombre }}
+                    </ng-container>
+                    <ng-template #interno>Proyecto interno</ng-template>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a routerLink="/proyectos/nuevo" class="btonNuevoProyecto">
+        <img src="nuevoProyecto.svg" alt="Nuevo proyecto" />
+    </a>
+    <button class="btn-exportar" (click)="exportarCSV()">Exportar a CSV</button>
+    
 </div>

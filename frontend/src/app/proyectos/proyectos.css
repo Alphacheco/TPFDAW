@@ -1,73 +1,74 @@
-.contenedor {
-    max-width: 1000px;
-    margin: 30px auto;
-    padding: 20px;
-}
-
-h1 {
-    margin-bottom: 20px;
-}
-
-.btn-nuevo {
-    display: inline-block;
-    margin-bottom: 20px;
-    padding: 10px 16px;
-    text-decoration: none;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-.lista-proyectos {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.lista-proyectos li {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 12px;
-    background-color: #fff;
-}
-
-.fila-principal {
+.proyectosVista {
+    color: #3c3c3c !important;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 20px;
+    padding: 20px;
+    font-family: 'Archivo', sans-serif;
+    margin-bottom: 80px;
 }
 
-.fila-principal a:first-child {
-    flex: 1;
+.proyectosVista a:hover, .tabla-proyectos td a:hover {
+    
+    
+    transform: scale(1.15);
+    transition: transform 0.2s ease-in-out;
+}
+
+.tabla-proyectos {
+    width: 60%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    
+}
+
+.tabla-proyectos th, .tabla-proyectos td {
+    border-bottom: 1px solid #3c3c3c;
+    padding: 8px;
+    text-align: center;
+}
+
+
+
+.tabla-proyectos td a{
+    color: #58B14B;
     text-decoration: none;
+    display: inline-block;
 }
 
-.estado {
-    min-width: 120px;
-    font-weight: bold;
+.tabla-proyectos th {
+   border:none;
+   font-weight: normal; 
 }
 
-.btn-editar {
-    text-decoration: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
 
-.cliente {
-    margin-top: 8px;
-    color: #666;
+.btonNuevoProyecto {
+    margin-top: 20px;
+    margin-right: auto;
+    margin-left: 20%;
+    cursor: pointer;
 }
-
-.acciones {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+.btonNuevoProyecto img{
+    margin: 0;
+    max-width: 50px;
+    
+    
 }
 
 .btn-exportar {
+    margin-top: 16px;
+    margin-bottom: 16px;
     padding: 10px 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    border: 1px solid #3c3c3c;
+    border-radius: 8px;
+    background: #EFEEDF;
+    color: #3c3c3c;
+    font-family: 'Archivo', sans-serif;
+    font-size: 14px;
     cursor: pointer;
+}
+
+.btn-exportar:hover {
+    transform: scale(1.03);
+    transition: transform 0.2s ease-in-out;
 }
