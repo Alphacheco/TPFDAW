@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProyectosApiClient } from '../proyectos/proyectos-api-client';
-import { ClientesApiClient, ClienteDTO } from '../clientes/clientes-api-client';
+import { ProyectoDetalleApiClient } from '../proyecto-detalle/proyecto-detalle-api-client';
+import { ClientesApiClient, ListClienteDTO } from '../clientes/clientes-api-client';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -9,19 +10,19 @@ import { ActivatedRoute, Router } from '@angular/router';
     standalone: true,
     templateUrl: "./proyecto-editar.html",
     styleUrl: "./proyecto-editar.css",
-    imports: [FormsModule]
+    imports: [CommonModule, FormsModule]
 })
 
 export class ProyectoEditar {
     id!: number;
     nombre: string = "";
     estado: string = "ACTIVO";
-    clientes: ClienteDTO[] = [];
+    clientes: ListClienteDTO[] = [];
     idCliente?: number;
 
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
-    private readonly proyectosApiClient = inject(ProyectosApiClient);
+    private readonly proyectosApiClient = inject(ProyectoDetalleApiClient);
     private readonly clientesApiClient = inject(ClientesApiClient);
 
     ngOnInit() {
@@ -32,14 +33,10 @@ export class ProyectoEditar {
 
         this.proyectosApiClient
             .obtenerProyecto(this.id)
-            .subscribe(proyecto => {
+            .subscribe((proyecto) => {
 
                 this.nombre = proyecto.nombre;
                 this.estado = proyecto.estado;
-
-                if (proyecto.id) {
-                    this.idCliente = proyecto.id;
-                }
 
             });
 
@@ -53,7 +50,7 @@ export class ProyectoEditar {
     guardar() {
 
         this.proyectosApiClient
-            .actualizarProyecto(
+            .updateProyecto(
                 this.id,
                 {
                     nombre: this.nombre,
@@ -65,7 +62,7 @@ export class ProyectoEditar {
                 next: () => {
                     this.router.navigateByUrl('/proyectos');
                 },
-                error: err => {
+                error: (err: unknown) => {
                     console.error(err);
                 }
             });
