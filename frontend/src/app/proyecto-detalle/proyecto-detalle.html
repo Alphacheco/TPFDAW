@@ -1,0 +1,51 @@
+<div>
+    <h1> Detalle del Proyecto </h1>
+    
+    <div *ngIf="cargando">
+        Cargando proyecto...
+    </div>
+
+    <div *ngIf="!cargando && mensajeError">
+        {{ mensajeError }}
+    </div>
+
+    <div *ngIf="!cargando && proyecto">
+        <h2> {{ proyecto.nombre }} </h2>
+
+        <p>
+            Estado: {{ proyecto.estado  }}
+        </p>
+
+        <p *ngIf = "proyecto.cliente">
+            Cliente: {{ proyecto.cliente }}
+        </p>
+
+        <p *ngIf = "!proyecto.cliente">
+            Proyecto interno
+        </p>
+
+        <div>
+            <input 
+                type="text"
+                [(ngModel)] = "nuevaDescripcion"
+                placeholder="Descripcion de la tarea"
+            >
+            <button type="button" (click)="crearTarea()">
+                Agregar tarea
+            </button>
+        </div>
+
+        <h3> Tareas</h3>
+        
+        <div *ngIf="proyecto.tareas.length === 0">
+            No hay tareas cargadas
+        </div>
+
+
+        <ul *ngIf="proyecto.tareas.length > 0">
+            <li *ngFor = "let tarea of proyecto.tareas">
+                {{ tarea.descripcion }} - {{ tarea.estado }}
+            </li>
+        </ul>
+    </div>
+</div>
