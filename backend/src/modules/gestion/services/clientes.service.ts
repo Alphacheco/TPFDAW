@@ -4,7 +4,7 @@ import { CreateClienteDto } from "../dtos/input/create-cliente.dto";
 import { EstadosClientesEnum } from "../enums/estados-clientes.enum";
 import { UpdateClienteDto } from "../dtos/input/update-cliente.dto";
 import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator";
-import { FindOptionsWhere, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { ListClienteDTO } from "../dtos/output/list-cliente.dto";
 import { BadRequestException, forwardRef, Inject } from "@nestjs/common";
 import { ProyectosService } from "./proyectos.service";
@@ -59,33 +59,32 @@ export class ClientesService {
         await this.repository.save(cliente);
     }
 
-    async obtenerClientes(estado: EstadosClientesEnum): Promise<ListClienteDTO[]> {
+    async obtenerClientes(
+        filters: { nombre?: string; estado?: EstadosClientesEnum }
+    ): Promise<ListClienteDTO[]> {
 
-        const whereCondition: FindOptionsWhere<ListClienteDTO> = {}
+        const qb = this.repository.createQueryBuilder('cliente');
 
-        if (estado){
-            whereCondition.estado = estado
+        if (filters.nombre) {
+            qb.andWhere('LOWER(cliente.nombre) LIKE LOWER(:nombre)', { nombre: `%${filters.nombre}%` });
+        }
+        if (filters.estado) {
+            qb.andWhere('cliente.estado = :estado', { estado: filters.estado });
         }
 
-        const clientes: Cliente[] = await this.repository.find({
-            select: { id: true, nombre: true, telefono: true, email: true, estado: true },
-            order: { id: 'ASC' },
-            where: whereCondition
-        });
+        qb.orderBy('cliente.id', 'ASC');
 
-        const dtoList: ListClienteDTO[] = [];
+        const clientes = await qb.getMany();
 
-        for (const c of clientes) {
+        return clientes.map(c => {
             const dto = new ListClienteDTO();
             dto.id = c.id;
             dto.nombre = c.nombre;
             dto.telefono = c.telefono;
             dto.email = c.email;
             dto.estado = c.estado;
-            dtoList.push(dto);
-        }
-
-        return dtoList;
+            return dto;
+        });
     }
 
     async existeClienteActivoPorId(id: number): Promise<boolean> {

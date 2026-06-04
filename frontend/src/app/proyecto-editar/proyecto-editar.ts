@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProyectosApiClient } from '../proyectos/proyectos-api-client';
-import { ClientesApiClient, ClienteDTO } from '../clientes/clientes-api-client';
+import { ClientesApiClient, ListClienteDTO } from '../clientes/clientes-api-client';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -16,7 +16,7 @@ export class ProyectoEditar {
     id!: number;
     nombre: string = "";
     estado: string = "ACTIVO";
-    clientes: ClienteDTO[] = [];
+    clientes: ListClienteDTO[] = [];
     idCliente?: number;
 
     private readonly route = inject(ActivatedRoute);
@@ -37,16 +37,16 @@ export class ProyectoEditar {
                 this.nombre = proyecto.nombre;
                 this.estado = proyecto.estado;
 
-                if (proyecto.id) {
-                    this.idCliente = proyecto.id;
+                if (proyecto.cliente?.id) {
+                    this.idCliente = proyecto.cliente.id;
                 }
 
             });
 
         this.clientesApiClient
-            .getClientes()
+            .getClientes({ estado: 'ACTIVO' })
             .subscribe(clientes => {
-                this.clientes = clientes.filter(c => c.estado === "ACTIVO");
+                this.clientes = clientes;
             });
     }
 
@@ -65,7 +65,7 @@ export class ProyectoEditar {
                 next: () => {
                     this.router.navigateByUrl('/proyectos');
                 },
-                error: err => {
+                error: (err: unknown) => {
                     console.error(err);
                 }
             });

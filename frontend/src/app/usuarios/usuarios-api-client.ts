@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
@@ -12,8 +12,11 @@ export interface ListUsuarioDTO {
 export class UsuariosApiClient {
     private readonly client: HttpClient = inject(HttpClient);
 
-    obtenerUsuarios(): Observable<ListUsuarioDTO[]> {
-        return this.client.get<ListUsuarioDTO[]>("/api/v1/usuarios");
+    obtenerUsuarios(params: { nombre?: string; estado?: string } = {}): Observable<ListUsuarioDTO[]> {
+        let httpParams = new HttpParams();
+        if (params.nombre) httpParams = httpParams.set('nombre', params.nombre);
+        if (params.estado) httpParams = httpParams.set('estado', params.estado);
+        return this.client.get<ListUsuarioDTO[]>("/api/v1/usuarios", { params: httpParams });
     }
 
     crearUsuario(dto: { nombre: string; clave: string; estado: string }): Observable<{ id: number }> {

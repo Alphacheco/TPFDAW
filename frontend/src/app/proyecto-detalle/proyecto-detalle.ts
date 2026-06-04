@@ -87,9 +87,9 @@ export class ProyectoDetalle {
                 this.recargarProyecto();
 
             },
-            error: (err => {
+            error: (err) => {
                 console.error("error creando tarea", err);
-            })
+            }
         })
     }
     recargarProyecto(): void {

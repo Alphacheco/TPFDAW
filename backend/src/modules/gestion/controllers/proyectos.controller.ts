@@ -1,11 +1,12 @@
-import { Body, Controller, Get, Header, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Header, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { CreateProyectoDto } from "../dtos/input/create-proyecto.dto";
 import { UpdateProyectoDto } from "../dtos/input/update-proyecto.dto";
-import { ApiBearerAuth, ApiOkResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
 import { ListProyectoDTO } from "../dtos/output/list-proyecto.dto";
 import { ProyectoDTO } from "../dtos/output/proyecto.dto";
 import { ProyectosService } from "../services/proyectos.service";
 import { AuthGuard } from "../../auth/guards/auth.guard";
+import { EstadosProyectosEnum } from "../enums/estados-proyectos.enum";
 
 @Controller('proyectos')
 export class ProyectosController {
@@ -30,12 +31,17 @@ export class ProyectosController {
     }
 
     @ApiBearerAuth()
-    @ApiOkResponse({ type: ListProyectoDTO, isArray: true })
+    @ApiQuery({ name: 'nombre', required: false })
+    @ApiQuery({ name: 'estado', required: false, enum: EstadosProyectosEnum })
+    @ApiQuery({ name: 'nombreCliente', required: false })
     @UseGuards(AuthGuard)
     @Get()
-    async obtenerProyectos(): Promise<ListProyectoDTO[]> {
-
-        return await this.proyectosService.obtenerProyectos();
+    async obtenerProyectos(
+        @Query('nombre') nombre?: string,
+        @Query('estado') estado?: EstadosProyectosEnum,
+        @Query('nombreCliente') nombreCliente?: string
+    ): Promise<ListProyectoDTO[]> {
+        return this.proyectosService.obtenerProyectos({ nombre, estado, nombreCliente });
     }
 
     @ApiBearerAuth()

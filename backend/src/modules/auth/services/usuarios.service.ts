@@ -19,11 +19,20 @@ export class UsuariosService {
 
     }
 
-    async obtenerUsuarios(): Promise<ListUsuarioDto[]> {
-        const usuarios = await this.usuariosRespository.find({
-            select: { id: true, nombre: true, estado: true },
-            order: { id: "ASC" },
-        });
+    async obtenerUsuarios(filters: { nombre?: string; estado?: EstadosUsuariosEnum }): Promise<ListUsuarioDto[]> {
+        const qb = this.usuariosRespository.createQueryBuilder('usuario');
+
+        if (filters.nombre) {
+            qb.andWhere('LOWER(usuario.nombre) LIKE LOWER(:nombre)', { nombre: `%${filters.nombre}%` });
+        }
+        if (filters.estado) {
+            qb.andWhere('usuario.estado = :estado', { estado: filters.estado });
+        }
+
+        qb.select(['usuario.id', 'usuario.nombre', 'usuario.estado'])
+          .orderBy('usuario.id', 'ASC');
+
+        const usuarios = await qb.getMany();
 
         return usuarios.map((u) => ({
             id: u.id,

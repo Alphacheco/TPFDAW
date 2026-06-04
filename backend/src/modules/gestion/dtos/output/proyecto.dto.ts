@@ -10,8 +10,8 @@ export class ProyectoDTO {
     @ApiProperty()
     estado!: EstadosProyectosEnum;
 
-    @ApiProperty()
-    cliente!: string;
+    @ApiProperty({ required: false })
+    cliente?: string;
 
     @ApiProperty()
     tareas!: ListTareaDTO[];

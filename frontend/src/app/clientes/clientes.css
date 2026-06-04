@@ -27,6 +27,11 @@
     background-color: #3c3c3c;
 }
 
+.crear-cliente input::placeholder,
+.clientes-vista input::placeholder {
+    color: #c8c8b8;
+}
+
 .crear-cliente input:-webkit-autofill,
 .crear-cliente input:-webkit-autofill:hover,
 .crear-cliente input:-webkit-autofill:focus,
@@ -75,6 +80,28 @@
 .clientes-vista button:hover {
     transform: scale(1.06);
     transition: transform 0.2s ease-in-out;
+}
+
+.tabla-clientes .fila-filtros th {
+    padding: 6px 8px;
+    border-bottom: 2px solid #3c3c3c;
+}
+
+.tabla-clientes .fila-filtros input,
+.tabla-clientes .fila-filtros select {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.9rem;
+    background-color: #3c3c3c;
+    color: #EFEEDF;
+    box-sizing: border-box;
+}
+
+.tabla-clientes .fila-filtros input::placeholder {
+    color: #c8c8b8;
 }
 
 @media (max-width: 768px) {

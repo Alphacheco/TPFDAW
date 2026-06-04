@@ -28,7 +28,20 @@ export class UsuariosComponent implements OnInit {
     claveEditando: string = "";
     estadoEditando: string = "ACTIVO";
 
+    filtroNombre: string = '';
+    filtroEstado: string = '';
+    private filtroTimer: ReturnType<typeof setTimeout> | null = null;
+
     ngOnInit(): void {
+        this.cargarUsuarios();
+    }
+
+    onFiltroTextoChange(): void {
+        if (this.filtroTimer) clearTimeout(this.filtroTimer);
+        this.filtroTimer = setTimeout(() => this.cargarUsuarios(), 400);
+    }
+
+    onFiltroSelectChange(): void {
         this.cargarUsuarios();
     }
 
@@ -36,7 +49,10 @@ export class UsuariosComponent implements OnInit {
         this.cargando = true;
         this.mensajeErrorCarga = "";
 
-        this.usuariosApiClient.obtenerUsuarios().subscribe({
+        this.usuariosApiClient.obtenerUsuarios({
+            nombre: this.filtroNombre || undefined,
+            estado: this.filtroEstado || undefined
+        }).subscribe({
             next: (data) => {
                 this.usuarios = data;
                 this.cargando = false;

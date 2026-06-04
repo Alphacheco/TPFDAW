@@ -1,7 +1,7 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateProyectoDto } from "../dtos/input/create-proyecto.dto";
 import { Proyecto } from "../entities/proyecto.entity";
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { EstadosProyectosEnum } from "../enums/estados-proyectos.enum";
 import { UpdateProyectoDto } from "../dtos/input/update-proyecto.dto";
 import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/common";
@@ -59,27 +59,40 @@ export class ProyectosService {
         await this.repository.save(proyecto);
     }
 
-    async obtenerProyectos(): Promise<ListProyectoDTO[]> {
+    async obtenerProyectos(
+        filters: { nombre?: string; estado?: EstadosProyectosEnum; nombreCliente?: string }
+    ): Promise<ListProyectoDTO[]> {
 
-        const proyectos: Proyecto[] = await this.repository.find({ relations: ['cliente'], order: { id: 'ASC' } });
+        const qb = this.repository.createQueryBuilder('proyecto')
+            .leftJoinAndSelect('proyecto.cliente', 'cliente');
 
-        const dtoList: ListProyectoDTO[] = [];
+        if (filters.nombre) {
+            qb.andWhere('LOWER(proyecto.nombre) LIKE LOWER(:nombre)', { nombre: `%${filters.nombre}%` });
+        }
+        if (filters.estado) {
+            qb.andWhere('proyecto.estado = :estado', { estado: filters.estado });
+        }
+        if (filters.nombreCliente) {
+            qb.andWhere('LOWER(cliente.nombre) LIKE LOWER(:nombreCliente)', { nombreCliente: `%${filters.nombreCliente}%` });
+        }
 
-        for (const p of proyectos) {
+        qb.orderBy('proyecto.id', 'ASC');
+
+        const proyectos = await qb.getMany();
+
+        return proyectos.map(p => {
             const dto = new ListProyectoDTO();
             dto.id = p.id;
             dto.nombre = p.nombre;
             dto.estado = p.estado;
             if (p.cliente) {
                 dto.cliente = new ListClienteDTO();
-                dto.cliente.id = p.cliente.id
+                dto.cliente.id = p.cliente.id;
                 dto.cliente.nombre = p.cliente.nombre;
-                dto.cliente.estado = p.cliente.estado
+                dto.cliente.estado = p.cliente.estado;
             }
-            dtoList.push(dto);
-        }
-
-        return dtoList;
+            return dto;
+        });
 
     }
 
@@ -141,9 +154,9 @@ export class ProyectosService {
     async existeProyectoPorIdCliente(idCliente: number): Promise<boolean> {
 
         const existe: boolean = await this.repository.exists({
-             where: { cliente: { id: idCliente } }
+            where: { cliente: { id: idCliente }, estado: Not(EstadosProyectosEnum.BAJA) }
         });
-        
+
         return existe;
     }
 

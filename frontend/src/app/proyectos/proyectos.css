@@ -72,3 +72,25 @@
     transform: scale(1.03);
     transition: transform 0.2s ease-in-out;
 }
+
+.tabla-proyectos .fila-filtros th {
+    padding: 6px 8px;
+    border-bottom: 2px solid #3c3c3c;
+}
+
+.tabla-proyectos .fila-filtros input,
+.tabla-proyectos .fila-filtros select {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.9rem;
+    background-color: #3c3c3c;
+    color: #EFEEDF;
+    box-sizing: border-box;
+}
+
+.tabla-proyectos .fila-filtros input::placeholder {
+    color: #c8c8b8;
+}
