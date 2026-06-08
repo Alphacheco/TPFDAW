@@ -51,9 +51,10 @@
             </tr>
         </tbody>
     </table>
-
-    <a routerLink="/proyectos/nuevo" class="btonNuevoProyecto">
-        <img src="nuevoProyecto.svg" alt="Nuevo proyecto" />
-    </a>
-    <button class="btn-exportar" (click)="exportarCSV()">Exportar a CSV</button>
+    <div class="acciones">
+        <a routerLink="/proyectos/nuevo" class="btonNuevoProyecto">
+            <img src="nuevoProyecto.svg" alt="Nuevo proyecto" />
+        </a>
+        <button class="exportarsvg" (click)="exportarCSV()"><img src="export.svg" alt="Exportar a CSV" />Exportar CSV</button>
+    </div>   
 </div>
