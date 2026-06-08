@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse } from "@nestjs/swagger";
+import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
+import { EstadosUsuariosEnum } from "../enums/estados-usuarios.enum";
 import { AuthGuard } from "../guards/auth.guard";
 import { CreateUsuarioDto } from "../dtos/input/create-usuario.dto";
 import { UpdateUsuarioDto } from "../dtos/input/update-usuario.dto";
@@ -12,11 +13,15 @@ export class UsuariosController {
     constructor(private readonly usuariosService: UsuariosService) {}
 
     @ApiBearerAuth()
-    @ApiOkResponse({ type: ListUsuarioDto, isArray: true })
+    @ApiQuery({ name: 'nombre', required: false })
+    @ApiQuery({ name: 'estado', required: false, enum: EstadosUsuariosEnum })
     @UseGuards(AuthGuard)
     @Get()
-    async obtenerUsuarios(): Promise<ListUsuarioDto[]> {
-        return await this.usuariosService.obtenerUsuarios();
+    async obtenerUsuarios(
+        @Query('nombre') nombre?: string,
+        @Query('estado') estado?: EstadosUsuariosEnum
+    ): Promise<ListUsuarioDto[]> {
+        return this.usuariosService.obtenerUsuarios({ nombre, estado });
     }
 
     @ApiBearerAuth()

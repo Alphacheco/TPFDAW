@@ -1,17 +1,16 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClientesApiClient, ListClienteDTO } from './clientes-api-client';
-import { FormsModule } from '@angular/forms'
+import { FormsModule } from '@angular/forms';
+import { Dialog } from 'primeng/dialog';
 
 @Component({
     selector: 'app-clientes',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, Dialog],
     templateUrl: './clientes.html',
     styleUrl: './clientes.css'
-
 })
-
 export class ClientesComponent implements OnInit {
     private readonly clientesApi: ClientesApiClient = inject(ClientesApiClient);
     private readonly changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
@@ -20,6 +19,7 @@ export class ClientesComponent implements OnInit {
     cargando: boolean = true;
     mensajeErrorCarga: string = '';
     mensajeErrorOperacion: string = '';
+    mostrarDialogoError: boolean = false;
 
     nombreNuevo: string = '';
     telefonoNuevo: string = '';
@@ -30,7 +30,20 @@ export class ClientesComponent implements OnInit {
     emailEditando: string = '';
     estadoEditando: string = 'ACTIVO';
 
+    filtroNombre: string = '';
+    filtroEstado: string = '';
+    private filtroTimer: ReturnType<typeof setTimeout> | null = null;
+
     ngOnInit(): void {
+        this.cargarClientes();
+    }
+
+    onFiltroTextoChange(): void {
+        if (this.filtroTimer) clearTimeout(this.filtroTimer);
+        this.filtroTimer = setTimeout(() => this.cargarClientes(), 400);
+    }
+
+    onFiltroSelectChange(): void {
         this.cargarClientes();
     }
 
@@ -38,7 +51,10 @@ export class ClientesComponent implements OnInit {
         this.cargando = true;
         this.mensajeErrorCarga = '';
 
-        this.clientesApi.getClientes().subscribe({
+        this.clientesApi.getClientes({
+            nombre: this.filtroNombre || undefined,
+            estado: this.filtroEstado || undefined
+        }).subscribe({
             next: (data) => {
                 this.clientes = data;
                 this.cargando = false;
@@ -52,6 +68,7 @@ export class ClientesComponent implements OnInit {
             }
         });
     }
+
     crearCliente(): void {
         if (!this.nombreNuevo.trim() || !this.telefonoNuevo.trim() || !this.emailNuevo.trim()) {
             return;
@@ -73,6 +90,7 @@ export class ClientesComponent implements OnInit {
             error: (err) => {
                 console.error('Error creando cliente', err);
                 this.mensajeErrorOperacion = this.obtenerMensajeError(err, 'No se pudo crear el cliente');
+                this.mostrarDialogoError = true;
                 this.changeDetectorRef.markForCheck();
             }
         });
@@ -92,11 +110,10 @@ export class ClientesComponent implements OnInit {
         this.telefonoEditando = '';
         this.emailEditando = '';
         this.estadoEditando = 'ACTIVO';
-
     }
 
     guardarEdicion(): void {
-        if (this.clienteEditandoId === null || !this.nombreEditando.trim() || !this.telefonoEditando.trim() || !this.emailEditando.trim()) {
+        if (this.clienteEditandoId === null || !this.nombreEditando.trim()) {
             return;
         }
 
@@ -104,9 +121,9 @@ export class ClientesComponent implements OnInit {
 
         this.clientesApi.actualizarCliente(this.clienteEditandoId, {
             nombre: this.nombreEditando,
-            telefono: this.telefonoEditando,
-            email: this.emailEditando,
-            estado: this.estadoEditando   
+            telefono: this.telefonoEditando || undefined,
+            email: this.emailEditando || undefined,
+            estado: this.estadoEditando
         }).subscribe({
             next: () => {
                 this.cancelarEdicion();
@@ -115,28 +132,26 @@ export class ClientesComponent implements OnInit {
             error: (err) => {
                 console.error('Error actualizando cliente', err);
                 this.mensajeErrorOperacion = this.obtenerMensajeError(err, 'No se pudo actualizar el cliente');
+                this.mostrarDialogoError = true;
                 this.changeDetectorRef.markForCheck();
             }
         });
     }
 
-    eliminarCliente(id:number): void {
+    eliminarCliente(id: number): void {
         const confirmado: boolean = window.confirm('¿Seguro que querés eliminar este cliente?');
-
-        if (!confirmado) {
-            return;
-        }
+        if (!confirmado) return;
 
         this.mensajeErrorOperacion = '';
 
         this.clientesApi.deleteCliente(id).subscribe({
             next: () => {
                 this.cargarClientes();
-
             },
             error: (err) => {
                 console.error('Error eliminando cliente', err);
                 this.mensajeErrorOperacion = this.obtenerMensajeError(err, 'No se pudo eliminar el cliente');
+                this.mostrarDialogoError = true;
                 this.changeDetectorRef.markForCheck();
             }
         });

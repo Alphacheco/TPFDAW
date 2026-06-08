@@ -34,16 +34,15 @@ export class ClientesController {
     }
 
     @ApiBearerAuth()
-    @ApiOkResponse({ type: ListClienteDTO, isArray: true })
-    @ApiQuery({
-        name: 'estado',
-        required: false,
-        enum: EstadosClientesEnum
-    })
+    @ApiQuery({ name: 'nombre', required: false })
+    @ApiQuery({ name: 'estado', required: false, enum: EstadosClientesEnum })
     @UseGuards(AuthGuard)
     @Get()
-    async obtenerClientes(@Query("estado") estado: EstadosClientesEnum): Promise<ListClienteDTO[]> {
-        return await this.clientesService.obtenerClientes(estado);
+    async obtenerClientes(
+        @Query('nombre') nombre?: string,
+        @Query('estado') estado?: EstadosClientesEnum
+    ): Promise<ListClienteDTO[]> {
+        return this.clientesService.obtenerClientes({ nombre, estado });
     }
 
 }

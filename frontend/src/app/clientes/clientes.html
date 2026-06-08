@@ -8,23 +8,29 @@
         <button type="button" (click)="crearCliente()">Agregar cliente</button>
     </div>
 
-    <div *ngIf="cargando">
-        Cargando clientes...
-    </div>
-
-    <div *ngIf="!cargando && mensajeErrorCarga">
+    <div *ngIf="mensajeErrorCarga">
         {{ mensajeErrorCarga }}
     </div>
 
-    <div *ngIf="mensajeErrorOperacion">
-        {{ mensajeErrorOperacion }}
-    </div>
+    <p-dialog
+        header="Aviso"
+        [(visible)]="mostrarDialogoError"
+        [modal]="true"
+        [closable]="true"
+        [style]="{ width: '400px' }">
+        <p>{{ mensajeErrorOperacion }}</p>
+        <ng-template #footer>
+            <button type="button"
+                style="background-color:#58B14B;color:#EFEEDF;border:none;border-radius:10px;padding:8px 20px;cursor:pointer;font-family:'Archivo',sans-serif;font-weight:600;"
+                (click)="mostrarDialogoError = false">
+                Cerrar
+            </button>
+        </ng-template>
+    </p-dialog>
 
-    <div *ngIf="!cargando && !mensajeErrorCarga && clientes.length === 0">
-        No hay clientes cargados.
-    </div>
+    <div *ngIf="cargando">Cargando clientes...</div>
 
-    <table *ngIf="!cargando && !mensajeErrorCarga && clientes.length > 0">
+    <table *ngIf="!cargando && !mensajeErrorCarga" class="tabla-clientes">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -33,54 +39,67 @@
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
+            <tr class="fila-filtros">
+                <th>
+                    <input type="text" [(ngModel)]="filtroNombre" (input)="onFiltroTextoChange()" placeholder="Buscar...">
+                </th>
+                <th></th>
+                <th></th>
+                <th>
+                    <select [(ngModel)]="filtroEstado" (change)="onFiltroSelectChange()">
+                        <option value="">Todos</option>
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="BAJA">BAJA</option>
+                    </select>
+                </th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
+            <tr *ngIf="clientes.length === 0">
+                <td colspan="5" style="text-align:center; padding:20px;">No hay clientes.</td>
+            </tr>
             <tr *ngFor="let cliente of clientes">
                 <td>
                     <ng-container *ngIf="clienteEditandoId !== cliente.id; else editarNombre">
                         {{ cliente.nombre }}
                     </ng-container>
                     <ng-template #editarNombre>
-                        <input type="text" [(ngModel)]="nombreEditando" name="nombreEditando"> 
+                        <input type="text" [(ngModel)]="nombreEditando">
                     </ng-template>
                 </td>
-
                 <td>
                     <ng-container *ngIf="clienteEditandoId !== cliente.id; else editarTelefono">
                         {{ cliente.telefono || '-' }}
                     </ng-container>
                     <ng-template #editarTelefono>
-                        <input type="text" [(ngModel)]="telefonoEditando" name="telefonoEditando">
+                        <input type="text" [(ngModel)]="telefonoEditando">
                     </ng-template>
                 </td>
-
                 <td>
                     <ng-container *ngIf="clienteEditandoId !== cliente.id; else editarEmail">
                         {{ cliente.email || '-' }}
                     </ng-container>
                     <ng-template #editarEmail>
-                        <input type="email" [(ngModel)]="emailEditando" name="emailEditando">
+                        <input type="email" [(ngModel)]="emailEditando">
                     </ng-template>
                 </td>
-
                 <td>
                     <ng-container *ngIf="clienteEditandoId !== cliente.id; else editarEstado">
                         {{ cliente.estado }}
                     </ng-container>
                     <ng-template #editarEstado>
-                        <select [(ngModel)]="estadoEditando" name="estadoEditando">
+                        <select [(ngModel)]="estadoEditando">
                             <option value="ACTIVO">ACTIVO</option>
                             <option value="BAJA">BAJA</option>
                         </select>
                     </ng-template>
                 </td>
-
                 <td>
                     <ng-container *ngIf="clienteEditandoId !== cliente.id; else accionesEdicion">
                         <button (click)="empezarEdicion(cliente)">Editar</button>
                         <button (click)="eliminarCliente(cliente.id)">Eliminar</button>
                     </ng-container>
-
                     <ng-template #accionesEdicion>
                         <button type="button" (click)="guardarEdicion()">Guardar</button>
                         <button type="button" (click)="cancelarEdicion()">Cancelar</button>

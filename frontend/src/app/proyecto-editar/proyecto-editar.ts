@@ -38,12 +38,16 @@ export class ProyectoEditar {
                 this.nombre = proyecto.nombre;
                 this.estado = proyecto.estado;
 
+                if (proyecto.cliente?.id) {
+                    this.idCliente = proyecto.cliente.id;
+                }
+
             });
 
         this.clientesApiClient
-            .getClientes()
+            .getClientes({ estado: 'ACTIVO' })
             .subscribe(clientes => {
-                this.clientes = clientes.filter(c => c.estado === "ACTIVO");
+                this.clientes = clientes;
             });
     }
 

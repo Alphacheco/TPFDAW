@@ -1,29 +1,40 @@
 <div class="proyectosVista">
     <h1>Proyectos</h1>
 
-    <div *ngIf="cargando">
-        Cargando Proyectos...
-    </div>
-
     <div *ngIf="!cargando && mensajeError">
         {{ mensajeError }}
     </div>
 
-    <div *ngIf="!cargando && !mensajeError && proyectos.length === 0">
-        No hay proyectos cargados.
-    </div>
+    <div *ngIf="cargando">Cargando proyectos...</div>
 
-    
-
-    <table class="tabla-proyectos" *ngIf="!cargando && !mensajeError && proyectos.length > 0">
+    <table class="tabla-proyectos" *ngIf="!cargando && !mensajeError">
         <thead>
             <tr>
                 <th>Nombre</th>
                 <th>Estado</th>
                 <th>Cliente</th>
             </tr>
+            <tr class="fila-filtros">
+                <th>
+                    <input type="text" [(ngModel)]="filtroNombre" (input)="onFiltroTextoChange()" placeholder="Buscar nombre...">
+                </th>
+                <th>
+                    <select [(ngModel)]="filtroEstado" (change)="onFiltroSelectChange()">
+                        <option value="">Todos</option>
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="FINALIZADO">FINALIZADO</option>
+                        <option value="BAJA">BAJA</option>
+                    </select>
+                </th>
+                <th>
+                    <input type="text" [(ngModel)]="filtroCliente" (input)="onFiltroTextoChange()" placeholder="Buscar cliente...">
+                </th>
+            </tr>
         </thead>
         <tbody>
+            <tr *ngIf="proyectos.length === 0">
+                <td colspan="3" style="text-align:center; padding:20px;">No hay proyectos.</td>
+            </tr>
             <tr *ngFor="let proyecto of proyectos">
                 <td>
                     <a [routerLink]="['/proyectos', proyecto.id]">
