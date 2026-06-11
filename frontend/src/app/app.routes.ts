@@ -24,11 +24,11 @@ export const routes: Routes = [
     },
     {
         path: 'clientes',
-        loadComponent: () => import('./clientes/clientes').then(m => m.ClientesComponent)
+        loadComponent: () => import('./clientes/clientes.component').then(m => m.ClientesComponent)
     },
     {
         path: 'usuarios',
-        loadComponent: () => import('./usuarios/usuarios').then(m => m.UsuariosComponent)
+        loadComponent: () => import('./usuarios/usuarios.component').then(m => m.UsuariosComponent)
     },
     {
         path: "**",
